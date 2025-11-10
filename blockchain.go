@@ -13,7 +13,7 @@ type Block struct {
 	transactions []string
 }
 
-func newBlock(nonce int, previousHash string) *Block {
+func NewBlock(nonce int, previousHash string) *Block {
 
 	b := new(Block)
 	b.timestamp = time.Now().UnixNano()
@@ -31,12 +31,13 @@ func (b *Block) Print() {
 }
 
 type Blockchain struct {
-	transactionnPool []stringchain []*Block
+	transactionnPool []string
+	chain            []*Block
 }
 
-unc NewBlockchain() *Blockchain {
-	bc := new(Blockchin)
-	bc.Create(0, "Init hash")
+func NewBlockchain() *Blockchain {
+	bc := new(Blockchain)
+	bc.CreateBlock(0, "Init hash")
 	return bc
 }
 
@@ -46,13 +47,21 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash string) *Block {
 	return b
 
 }
+
 // ----------
+
+func (bc *Blockchain) Print() {
+	for i, block := range bc.chain {
+		fmt.Printf("Chain %d \n", i)
+		block.Print()
+	}
+}
 func init() {
 	log.SetPrefix("Blockchain: ")
 }
 
 func main() {
-	b := newBlock(0, "init hash")
-	b.Print()
+	blockChain := NewBlockchain()
+	blockChain.Print()
 
 }
