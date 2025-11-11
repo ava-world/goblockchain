@@ -46,14 +46,11 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash string) *Block {
 	b := NewBlock(nonce, previousHash)
 	bc.chain = append(bc.chain, b)
 	return b
-
 }
-
-// ----------
 
 func (bc *Blockchain) Print() {
 	for i, block := range bc.chain {
-		fmt.Printf("%s Chain %d %s %s\n", i, strings.Repeat("=", 25), i,
+		fmt.Printf("%s Chain %d %s\n", strings.Repeat("=", 25), i,
 			strings.Repeat("=", 25))
 		block.Print()
 	}
