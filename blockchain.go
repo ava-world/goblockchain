@@ -104,10 +104,10 @@ func NewTransaction(sender string, recipient string, value float32) *Transaction
 }
 
 func (t *Transaction) Print() {
-	fmt.Print("%s\n", strings.Repeat("-", 40))
-	fmt.Print(" sender_blockchain_address	%s\n", t.senderBlockchainAddress)
-	fmt.Print(" recipient_blockchain_address	%s\n", t.recipientBlockchainAddress)
-	fmt.Print(" value	%.1f\n", t.value)
+	fmt.Printf("%s\n", strings.Repeat("-", 40))
+	fmt.Printf(" sender_blockchain_address	%s\n", t.senderBlockchainAddress)
+	fmt.Printf(" recipient_blockchain_address	%s\n", t.recipientBlockchainAddress)
+	fmt.Printf(" value	%.1f\n", t.value)
 }
 
 func (t *Transaction) MarshalJSON() ([]byte, error) {
