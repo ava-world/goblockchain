@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+const MINING_DIFFICULTY = 3
+
 type Block struct {
 	nonce        int
 	previousHash [32]byte
@@ -38,7 +40,6 @@ func (b *Block) Print() {
 
 func (b *Block) Hash() [32]byte {
 	m, _ := json.Marshal(b)
-	fmt.Println(string(m))
 	return sha256.Sum256([]byte(m))
 }
 
@@ -92,6 +93,18 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 	t := NewTransaction(sender, recipient, value)
 	bc.transactionPool = append(bc.transactionPool, t)
 }
+
+func (bc *Blockchain) CopyTransactionPool() []*Transaction {
+	transactions := make([]*Transaction, 0)
+	for _, t := range bc.transactionPool {
+		transactions = append(transactions,
+			NewTransaction(t.senderBlockchainAddress, t.recipientBlockchainAddress, 
+				t.value))
+	}
+	return transactions
+}
+
+func (bc *Blockchain) ValidProoff(nonce int, previousHash [32]byte, transactions [])
 
 type Transaction struct {
 	senderBlockchainAddress    string
