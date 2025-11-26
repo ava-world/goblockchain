@@ -201,5 +201,5 @@ func main() {
 
 	fmt.Printf("my %.1f\n", blockChain.CalculateTotalAmount("my_blockchain_address"))
 	fmt.Printf("C %.1f\n", blockChain.CalculateTotalAmount("C"))
-	fmt.Printf("C %.1f\n", blockChain.CalculateTotalAmount("D"))
+	fmt.Printf("D %.1f\n", blockChain.CalculateTotalAmount("D"))
 }
