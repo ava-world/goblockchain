@@ -63,6 +63,9 @@ func NewWallet() *Wallet {
 
 	// 9. Base58Check-encode that 25-byte payload → final Bitcoin address.
 
+	address := base58.Encode(dc8)
+	w.blockchainAddress = address
+
 	return w
 }
 
