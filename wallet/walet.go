@@ -29,12 +29,17 @@ func NewWallet() *Wallet {
 	h2.Write(W.publicKey.Y.Bytes())
 	digest2 := h2.Sum(nil)
 
-	// 3. optionally compress the public key to 33 bytes (02/03 + x).
+	// 3. perform ripemd160 hashing.
 
 	h3 := ripemd160.New()
 	h3.Write(digest2)
 	digest3 := h3.Sum(nil)
-	// 4. SHA-256 the public key.
+	// 4. add version byte in front of ripemd160.
+
+	vd4 := make([]byte, 21)
+	vd4[0] = 0x00
+	copy(vd4[1:], digest3[1:])
+
 	// 5. RIPEMD-160 the SHA-256 output → pubkey hash (20 bytes).
 	// 6. prepend the network version byte (0x00 for mainnet, 0x6f for testnet).
 	// 7. compute checksum = first 4 bytes of SHA256(SHA256(version + pubkeyhash)).
