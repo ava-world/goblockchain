@@ -56,6 +56,11 @@ func NewWallet() *Wallet {
 
 	chsum := digest6[:4]
 	// 8. append the 4-byte checksum to (version + pubkeyhash).
+
+	dc8 := make([]byte, 25)
+	copy(dc8[:21], vd4[:])
+	copy(dc8[:21], chsum[:])
+
 	// 9. Base58Check-encode that 25-byte payload → final Bitcoin address.
 
 	return w
