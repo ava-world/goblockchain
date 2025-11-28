@@ -5,9 +5,10 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"fmt"
+
 	"github.com/btcsuite/btcutil/base58"
 	"golang.org/x/crypto/ripemd160"
-	// "fmt"
 )
 
 type Wallet struct {
@@ -69,16 +70,16 @@ func NewWallet() *Wallet {
 	return w
 }
 
-// func (w *Wallet) PrivateKey() *ecdsa.PrivateKey {
-// 	return w.privateKey
-// }
-// func (w *Wallet) PrivateKeyStr() string {
-// 	return fmt.Sprintf("%x", w.privateKey.D.Bytes())
-// }
+func (w *Wallet) PrivateKey() *ecdsa.PrivateKey {
+	return w.privateKey
+}
+func (w *Wallet) PrivateKeyStr() string {
+	return fmt.Sprintf("%x", w.privateKey.D.Bytes())
+}
 
-// func (w *Wallet) PublicKey() *ecdsa.PublicKey {
-// 	return w.publicKey
-// }
-// func (w *Wallet) PublicKeyStr() string {
-// 	return fmt.Sprintf("%x%x", w.publicKey.X.Bytes(), w.publicKey.Y.Bytes())
-// }
+func (w *Wallet) PublicKey() *ecdsa.PublicKey {
+	return w.publicKey
+}
+func (w *Wallet) PublicKeyStr() string {
+	return fmt.Sprintf("%x%x", w.publicKey.X.Bytes(), w.publicKey.Y.Bytes())
+}
