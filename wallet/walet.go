@@ -40,7 +40,11 @@ func NewWallet() *Wallet {
 	vd4[0] = 0x00
 	copy(vd4[1:], digest3[1:])
 
-	// 5. RIPEMD-160 the SHA-256 output → pubkey hash (20 bytes).
+	// 5. perform sha256 hash on extended ripemd160 result
+
+	h5 := sha256.New()
+	h5.Write(vd4)
+	digest5 := h5.Sum(nil)
 	// 6. prepend the network version byte (0x00 for mainnet, 0x6f for testnet).
 	// 7. compute checksum = first 4 bytes of SHA256(SHA256(version + pubkeyhash)).
 	// 8. append the 4-byte checksum to (version + pubkeyhash).
