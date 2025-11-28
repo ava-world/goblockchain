@@ -5,18 +5,23 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"fmt"
+	"github.com/btcsuite/btcutil/base58"
+	"golang.org/x/crypto/ripemd160"
 )
 
 type Wallet struct {
-	privateKey *ecdsa.PrivateKey
-	publicKey  *ecdsa.PublicKey
+	privateKey        *ecdsa.PrivateKey
+	publicKey         *ecdsa.PublicKey
+	blockchainAddress string
 }
 
 func NewWallet() *Wallet {
+	// 1. creating ecdsa privatekey
 	w := new(Wallet)
 	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	w.privateKey = privateKey
 	w.publicKey = &w.privateKey.PublicKey
+
 	return w
 }
 
