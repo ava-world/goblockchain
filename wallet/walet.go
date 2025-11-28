@@ -50,8 +50,11 @@ func NewWallet() *Wallet {
 
 	h6 := sha256.New()
 	h6.Write(digest5)
-	diges6 := h5.Sum(nil)
+	digest6 := h5.Sum(nil)
+
 	// 7. compute checksum = first 4 bytes of SHA256(SHA256(version + pubkeyhash)).
+
+	chsum := digest6[:4]
 	// 8. append the 4-byte checksum to (version + pubkeyhash).
 	// 9. Base58Check-encode that 25-byte payload → final Bitcoin address.
 
