@@ -22,6 +22,15 @@ func NewWallet() *Wallet {
 	w.privateKey = privateKey
 	w.publicKey = &w.privateKey.PublicKey
 
+	// 2. compute the EC public key by doing a secp256k1 point multiply (g * priv).
+	// 3. optionally compress the public key to 33 bytes (02/03 + x).
+	// 4. SHA-256 the public key.
+	// 5. RIPEMD-160 the SHA-256 output → pubkey hash (20 bytes).
+	// 6. prepend the network version byte (0x00 for mainnet, 0x6f for testnet).
+	// 7. compute checksum = first 4 bytes of SHA256(SHA256(version + pubkeyhash)).
+	// 8. append the 4-byte checksum to (version + pubkeyhash).
+	// 9. Base58Check-encode that 25-byte payload → final Bitcoin address.
+
 	return w
 }
 
