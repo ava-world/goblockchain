@@ -26,8 +26,8 @@ func NewWallet() *Wallet {
 
 	// 2. compute the EC public key by doing a secp256k1 point multiply (g * priv).
 	h2 := sha256.New()
-	h2.Write(W.publicKey.X.Bytes())
-	h2.Write(W.publicKey.Y.Bytes())
+	h2.Write(w.publicKey.X.Bytes())
+	h2.Write(w.publicKey.Y.Bytes())
 	digest2 := h2.Sum(nil)
 
 	// 3. perform ripemd160 hashing.
