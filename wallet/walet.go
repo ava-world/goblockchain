@@ -101,8 +101,20 @@ func NewTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey, se
 }
 
 func (t *Transaction) GenerateSignature() *Signature {
-
+	m, _ := json.Marshal(t)
 }
+
+func (t *Transaction) MarshalJSON() ([]byte, error {
+	return json.Marshal(struct {
+		Sender string `json:"sender_blockchain_address"`
+		Recipient string `json:"recipient_blockchain_address"`
+		value float32 `json: "value"`
+	}{
+		Sender: t.senderBlockchainAddress,
+		Recipient: t.recipientBlockchainAddress,
+
+	})
+})
 
 type Signature struct {
 	R *big.Int
