@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"math/big"
 
@@ -107,19 +108,22 @@ func (t *Transaction) GenerateSignature() *Signature {
 	return &Signature{r, s}
 }
 
-func (t *Transaction) MarshalJSON() ([]byte, error {
+func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Sender string `json:"sender_blockchain_address"`
-		Recipient string `json:"recipient_blockchain_address"`
-		value float32 `json: "value"`
+		Sender    string  `json:"sender_blockchain_address"`
+		Recipient string  `json:"recipient_blockchain_address"`
+		value     float32 `json: "value"`
 	}{
-		Sender: t.senderBlockchainAddress,
+		Sender:    t.senderBlockchainAddress,
 		Recipient: t.recipientBlockchainAddress,
-
 	})
-})
+}
 
 type Signature struct {
 	R *big.Int
 	S *big.Int
+}
+
+func (s *Signature) String() string {
+	return fmt.Sprintf("%x%x", s.R, s.S)
 }
