@@ -1,9 +1,11 @@
 package block
 
 import (
+	"crypto/ecdsa"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"goblockchain/utils"
 	"log"
 	"strings"
 	"time"
