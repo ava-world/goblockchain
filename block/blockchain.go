@@ -148,7 +148,7 @@ func (bc *Blockchain) ProofOfWork() int {
 }
 
 func (bc *Blockchain) Mining() bool {
-	bc.AddTransaction(MININNG_SENDER, bc.blockchainAddress, MINING_REWARD)
+	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD, nil, nil)
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
