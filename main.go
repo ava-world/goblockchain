@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"goblockchain/block"
 	"goblockchain/wallet"
 	"log"
 )
@@ -15,16 +17,16 @@ func main() {
 	walletB := wallet.NewWallet()
 
 	//Wallet
-	t := wallet.NewTransaction(walletA.PrivateKey(), walletA.PublicKey(), walletA.BlockchainAddress(), walletB.BlockchainAddress() "B", 1.0)
+	t := wallet.NewTransaction(walletA.PrivateKey(), walletA.PublicKey(), walletA.BlockchainAddress(), walletB.BlockchainAddress(), 1.0)
 
 	//Blockchain
 	blockchain := block.NewBlockchain(walletM.BlockchainAddress())
-	isAdded := blockchain.AddTransaction(walletA.BlockchainAdress(), walletB.BlockchainAddress(), 1.0, 
+	isAdded := blockchain.AddTransaction(walletA.BlockchainAddress(), walletB.BlockchainAddress(), 1.0,
 		walletA.PublicKey(), t.GenerateSignature())
-	fmt.Println("Added? ", isAdded)	
+	fmt.Println("Added? ", isAdded)
 
-	blockchain.Mining.()
-	blockchain.Printf()
+	blockchain.Mining()
+	blockchain.Print()
 
 	fmt.Printf("A %.1f\n", blockchain.CalculateTotalAmount(walletA.BlockchainAddress()))
 	fmt.Printf("B %.1f\n", blockchain.CalculateTotalAmount(walletB.BlockchainAddress()))
