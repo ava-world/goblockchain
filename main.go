@@ -22,4 +22,11 @@ func main() {
 	isAdded := blockchain.AddTransaction(walletA.BlockchainAdress(), walletB.BlockchainAddress(), 1.0, 
 		walletA.PublicKey(), t.GenerateSignature())
 	fmt.Println("Added? ", isAdded)	
+
+	blockchain.Mining.()
+	blockchain.Printf()
+
+	fmt.Printf("A %.1f\n", blockchain.CalculateTotalAmount(walletA.BlockchainAddress()))
+	fmt.Printf("B %.1f\n", blockchain.CalculateTotalAmount(walletB.BlockchainAddress()))
+	fmt.Printf("M %.1f\n", blockchain.CalculateTotalAmount(walletM.BlockchainAddress()))
 }
