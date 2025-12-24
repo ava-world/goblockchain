@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Wallet Server — Demo UI</title>
+    <style>
+        body {
+            font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial;
+            line-height: 1.5;
+            margin: 24px
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 12px;
+            border-radius: 6px;
+            overflow: auto
+        }
+
+        button {
+            margin-right: 8px
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Wallet Server — Basic UI</h1>
+
+    <div class="card">
+        <label for="gateway">Blockchain Gateway</label>
+        <input id="gateway" type="text" value="http://127.0.0.1:5000" />
+        <button id="viewChain">View Blockchain</button>
+        <div id="chainResult"><em>No chain loaded</em></div>
+    </div>
+
+    <div class="card">
+        <h2>Create Wallet (client side)</h2>
+        <p>This will generate an ECDSA P-256 keypair in your browser and compute a simple address.</p>
+        <button id="createWallet">Create Wallet</button>
+        <div id="walletResult"><em>No wallet generated</em></div>
+    </div>
+
+    <script>
+        // Minimal Base58 implementation (Bitcoin alphabet)
+        const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+        function base58Encode(bytes) {
+            let i = 0; while (i < bytes.length && bytes[i] === 0) i++;
+            let num = BigInt('0x' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(''));
+            let encoded = '';
+            while (num > 0) {
+                const mod = Number(num % 58n);
+                encoded = BASE58_ALPHABET[mod] + encoded;
+                num = num / 58n;
+            }
+            return '1'.repeat(i) + encoded;
+        }
+
+        async function arrayBufferToHex(buffer) {
+            const b = new Uint8Array(buffer);
+            return Array.from(b).map(x => x.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function fetchChain() {
+            const gateway = document.getElementById('gateway').value.trim();
+            const out = document.getElementById('chainResult');
+            out.innerHTML = '<em>Loading...</em>';
+            try {
+                const res = await fetch(gateway + '/');
+                if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+                const text = await res.text();
+                out.innerHTML = '<pre>' + text.replace(/</g, '&lt;') + '</pre>';
+            } catch (err) {
+                out.innerHTML = '<pre>Error: ' + err.message + '</pre>';
+            }
+        }
+
+        async function createWallet() {
+            const out = document.getElementById('walletResult');
+            out.innerHTML = '<em>Generating...</em>';
+            try {
+                // generate ECDSA P-256 keypair
+                const kp = await window.crypto.subtle.generateKey(
+                    { name: 'ECDSA', namedCurve: 'P-256' },
+                    true,
+                    ['sign', 'verify']
+                );
+                const priv = await window.crypto.subtle.exportKey('pkcs8', kp.privateKey);
+                const pub = await window.crypto.subtle.exportKey('spki', kp.publicKey);
+                const pubHex = await arrayBufferToHex(pub);
+                const privHex = await arrayBufferToHex(priv);
+
+                // compute sha-256 of public key and take first 20 bytes for "address" then base58 encode
+                const sha = await window.crypto.subtle.digest('SHA-256', pub);
+                const shaBytes = new Uint8Array(sha).slice(0, 20);
+                const address = base58Encode(shaBytes);
+
+                out.innerHTML = `<pre>Address: ${address}\n\nPublic (SPKI hex): ${pubHex}\n\nPrivate (PKCS8 hex): ${privHex}</pre>`;
+            } catch (err) {
+                out.innerHTML = '<pre>Error: ' + err.message + '</pre>';
+            }
+        }
+
+        document.getElementById('viewChain').addEventListener('click', fetchChain);
+        document.getElementById('createWallet').addEventListener('click', createWallet);
+    </script>
+</body>
+
+</html>
