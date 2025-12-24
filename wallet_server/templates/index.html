@@ -57,6 +57,30 @@
         <h2>Create Wallet (client side)</h2>
         <p>This will generate an ECDSA P-256 keypair in your browser and compute a simple address.</p>
         <button id="createWallet">Create Wallet</button>
+
+        <label for="address">Address</label>
+        <input id="address" type="text" readonly />
+
+        <label for="pubKey">Public Key (SPKI hex)</label>
+        <textarea id="pubKey" rows="4" style="width:100%" readonly></textarea>
+
+        <label for="privKey">Private Key (PKCS8 hex)</label>
+        <textarea id="privKey" rows="4" style="width:100%" readonly></textarea>
+
+        <hr />
+        <h3>Prepare Transaction</h3>
+        <label for="recipient">Recipient Address</label>
+        <input id="recipient" type="text" placeholder="recipient blockchain address" />
+
+        <label for="amount">Amount</label>
+        <input id="amount" type="number" step="0.0001" placeholder="0.0" />
+
+        <div style="margin-top:8px">
+            <button id="prepareTx">Prepare Transaction</button>
+            <button id="sendToGateway">Send to Gateway</button>
+        </div>
+
+        <div id="txResult"><em>No transaction prepared</em></div>
         <div id="walletResult"><em>No wallet generated</em></div>
     </div>
 
@@ -122,6 +146,49 @@
 
         document.getElementById('viewChain').addEventListener('click', fetchChain);
         document.getElementById('createWallet').addEventListener('click', createWallet);
+        document.getElementById('prepareTx').addEventListener('click', prepareTransaction);
+        document.getElementById('sendToGateway').addEventListener('click', sendToGateway);
+
+        function prepareTransaction() {
+            const sender = document.getElementById('address').value.trim();
+            const recipient = document.getElementById('recipient').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const pubKey = document.getElementById('pubKey').value.trim();
+            const out = document.getElementById('txResult');
+
+            if (!sender || !recipient || !pubKey || isNaN(amount) || amount <= 0) {
+                out.innerHTML = '<pre>Error: fill address, pub key, recipient and positive amount</pre>';
+                return;
+            }
+
+            const payload = {
+                sender_blockchain_address: sender,
+                recipient_blockchain_address: recipient,
+                value: amount,
+                sender_public_key: pubKey
+            };
+            out.innerHTML = '<pre>' + JSON.stringify(payload, null, 2) + '</pre>';
+            return payload;
+        }
+
+        async function sendToGateway() {
+            const gateway = document.getElementById('gateway').value.trim();
+            const out = document.getElementById('txResult');
+            try {
+                const payload = prepareTransaction();
+                if (!payload) return;
+                out.innerHTML = '<em>Sending to gateway...</em>';
+                const res = await fetch(gateway + '/transactions/new', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const text = await res.text();
+                out.innerHTML = '<pre>HTTP ' + res.status + '\n' + text.replace(/</g, '&lt;') + '</pre>';
+            } catch (err) {
+                out.innerHTML = '<pre>Send failed: ' + err.message + '</pre>';
+            }
+        }
     </script>
 </body>
 
