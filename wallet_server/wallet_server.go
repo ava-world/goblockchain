@@ -15,8 +15,12 @@ type WalletServer struct {
 	gateway string
 }
 
-func NewWalletServer(Port() uint16, gateway string) *WalletServer {
-	return &WalletServer{port, gateway}
+func NewWalletServer(port uint16, gateway string) *WalletServer {
+	return &WalletServer{port: port, gateway: gateway}
+}
+
+func (ws *WalletServer) Port() uint16 {
+	return ws.port
 }
 
 func (ws *WalletServer) Gateway() string {
