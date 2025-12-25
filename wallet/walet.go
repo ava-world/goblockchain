@@ -19,6 +19,10 @@ type Wallet struct {
 	blockchainAddress string
 }
 
+// func (w *Wallet) MarshalJSON() (any, any) {
+// 	panic("unimplemented")
+// }
+
 func NewWallet() *Wallet {
 	// 1. creating ecdsa privatekey
 	w := new(Wallet)
@@ -87,6 +91,18 @@ func (w *Wallet) PublicKeyStr() string {
 }
 func (w *Wallet) BlockchainAddress() string {
 	return w.blockchainAddress
+}
+
+func (w *Wallet) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		PrivateKey        string `json:"private_key"`
+		PublicKey         string `json:"public_key"`
+		BlockchainAddress string `json:"blockchain_address"`
+	}{
+		PrivateKey:        w.PrivateKeyStr(),
+		PublicKey:         w.PublicKeyStr(),
+		BlockchainAddress: w.BlockchainAddress(),
+	})
 }
 
 type Transaction struct {
