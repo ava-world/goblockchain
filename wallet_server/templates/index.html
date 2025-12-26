@@ -5,6 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Wallet Server — Demo UI</title>
+    <script src="ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $.ajax({
+                url: '/wallet',
+                type: 'POST',
+                success: function (response) {
+                    $('#public_key').val(response['public_key']);
+                    $('#private_key').val(response['private_key']);
+                    $('#blockchan_address').val(response['blockchain_address']);
+                    console.info(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            })
+        })
+
+    </script>
     <style>
         body {
             font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial;
@@ -137,6 +156,20 @@
                 const sha = await window.crypto.subtle.digest('SHA-256', pub);
                 const shaBytes = new Uint8Array(sha).slice(0, 20);
                 const address = base58Encode(shaBytes);
+
+                // populate visible form fields
+                document.getElementById('address').value = address;
+                document.getElementById('pubKey').value = pubHex;
+                document.getElementById('privKey').value = privHex;
+
+                // also populate the IDs your original script uses so it stays compatible
+                function setIfExists(id, val) {
+                    const e = document.getElementById(id);
+                    if (e) e.value = val;
+                }
+                setIfExists('public_key', pubHex);
+                setIfExists('private_key', privHex);
+                setIfExists('blockchan_address', address);
 
                 out.innerHTML = `<pre>Address: ${address}\n\nPublic (SPKI hex): ${pubHex}\n\nPrivate (PKCS8 hex): ${privHex}</pre>`;
             } catch (err) {
