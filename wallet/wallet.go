@@ -128,9 +128,30 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Sender    string  `json:"sender_blockchain_address"`
 		Recipient string  `json:"recipient_blockchain_address"`
-		value     float32 `json: "value"`
+		Value     float32 `json:"value"`
 	}{
 		Sender:    t.senderBlockchainAddress,
 		Recipient: t.recipientBlockchainAddress,
+		Value:     t.value,
 	})
+}
+
+// TransactionRequest represents the JSON payload expected when creating a new transaction.
+type TransactionRequest struct {
+	SenderPrivateKey           *string  `json:"sender_private_key"`
+	SenderPublicKey            *string  `json:"sender_public_key"`
+	SenderBlockchainAddress    *string  `json:"sender_blockchain_address"`
+	RecipientBlockchainAddress *string  `json:"recipient_blockchain_address"`
+	Value                      *float32 `json:"value"`
+}
+
+func (tr *TransactionRequest) Validate() bool {
+	if tr.SenderPrivateKey == nil ||
+		tr.SenderPublicKey == nil ||
+		tr.SenderBlockchainAddress == nil ||
+		tr.RecipientBlockchainAddress == nil ||
+		tr.Value == nil {
+		return false
+	}
+	return true
 }

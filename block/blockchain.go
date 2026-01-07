@@ -82,7 +82,7 @@ func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 
 func (bc *Blockchain) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Blocks []*Block `json:"chains`
+		Blocks []*Block `json:"chains"`
 	}{
 		Blocks: bc.chain,
 	})
